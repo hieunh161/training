@@ -8,6 +8,9 @@ namespace ndd {
         KEY_ONE: Phaser.Key;
         KEY_TWO: Phaser.Key;
         KEY_THREE: Phaser.Key;
+        info: Phaser.BitmapText;
+        bullets: Phaser.Group;
+
         constructor() {
             super();
         }
@@ -18,8 +21,18 @@ namespace ndd {
             this.enemy = new Enemy(this.game, 0, this.game.height - 50);
             this.game.add.existing(this.enemy);
             this.rain = new Rain(this.game, 0, 0);
-            // this.snow = new Snow(this.game, 0, 0);
             this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
+            this.info = this.game.add.bitmapText(30, 20, "desyrel", "Health : " + this.enemy.health, 32);
+            // bullet
+            this.bullets = this.game.add.group();
+            this.bullets.enableBody = true;
+            this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+            this.bullets.createMultiple(30, "bullet", 0, false);
+            this.bullets.setAll("anchor.x", 0.5);
+            this.bullets.setAll("anchor.y", 0.5);
+            this.bullets.setAll("outOfBoundsKill", true);
+            this.bullets.setAll("checkWorldBounds", true);
+            this.game.input.onDown.add(this.shoot, this);
             // event handlers
             this.KEY_ONE = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE);
             this.KEY_TWO = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO);
@@ -28,17 +41,34 @@ namespace ndd {
             this.KEY_TWO.onDown.add(this.stopRain, this);
         }
 
+        shoot() {
+            let bullet = this.bullets.getFirstExists(false);
+            bullet.reset(970, 255);
+            bullet.rotation = this.game.physics.arcade.moveToPointer(bullet, 1000, this.game.input.activePointer, 500);
+        }
+        updateText() {
+          this.info.setText("Health : " + this.enemy.health);
+        }
         killEnemy() {
             this.enemy.kill();
         }
+        attackEnemy(enemy, bullet) {
+          // remove bullet
+          enemy.onAttack(1);
+          this.updateText();
+          bullet.kill();
+        }
         stopRain() {
-          this.rain.stop();
+            this.rain.stop();
         }
         startRain() {
-          this.rain.start();
+            this.rain.start();
         }
         removeSnow() {
             this.snow.kill();
+        }
+        update() {
+            this.game.physics.arcade.overlap(this.bullets, this.enemy, this.attackEnemy, null, this);
         }
     }
 }

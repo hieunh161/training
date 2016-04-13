@@ -15,10 +15,16 @@ export class GameLoad implements OnInit {
     // sprite
     this.game.load.atlasXML("enemy-walking", "assets/graphic/Hero_Walking.png", "assets/graphic/Hero_Walking.xml");
     this.game.load.atlasXML("enemy-idle", "assets/graphic/Hero_Idle.png", "assets/graphic/Hero_Idle.xml");
-
+    // weather
     this.game.load.spritesheet("rain", "assets/weather/rain.png", 17, 17);
     this.game.load.spritesheet("snowflakes", "assets/weather/snowflake.png", 17, 17);
     this.game.load.spritesheet("snowflakes_large", "assets/weather/snowflakes_large.png", 64, 64);
+    // font
+    this.game.load.bitmapFont("desyrel", "assets/font/desyrel.png", "assets/font/desyrel.xml");
+    // bullet
+    this.game.load.image("tank", "assets/ball/tank1.png");
+    this.game.load.image("bullet", "assets/ball/bullet.png");
+    this.game.load.spritesheet("kaboom", "assets/ball/explosion.png", 64, 64, 23);
   }
   create() {
     this.game.state.add("LoadingState", ndd.LoadingState, true);
