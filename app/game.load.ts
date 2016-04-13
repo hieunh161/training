@@ -24,6 +24,8 @@ export class GameLoad implements OnInit {
     // bullet
     this.game.load.image("tank", "assets/ball/tank1.png");
     this.game.load.image("bullet", "assets/ball/bullet.png");
+    this.game.load.image("single_bullet", "assets/ball/atom1b.png");
+    this.game.load.image("double_bullet", "assets/ball/atom2b.png");
     this.game.load.spritesheet("kaboom", "assets/ball/explosion.png", 64, 64, 23);
   }
   create() {
