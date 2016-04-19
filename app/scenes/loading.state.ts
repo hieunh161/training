@@ -13,6 +13,7 @@ namespace ndd {
         singleBullets: Phaser.Group;
         doubleBullets: Phaser.Group;
         bulletType: number;
+        bullet: BaseBullet;
         constructor() {
             super();
         }
@@ -25,66 +26,34 @@ namespace ndd {
             this.rain = new Rain(this.game, 0, 0);
             this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
             this.info = this.game.add.bitmapText(30, 20, "desyrel", "Health : " + this.enemy.health, 32);
-            // bullet
+            // add base damage
+            this.bullet = new Bullet();
+            // bullets
             this.bullets = this.game.add.group();
             this.bullets.enableBody = true;
             this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-            this.bullets.createMultiple(30, "bullet", 0, false);
+            this.bullets.createMultiple(30, this.bullet.getTexture(), 0, false);
             this.bullets.setAll("anchor.x", 0);
             this.bullets.setAll("anchor.y", 0);
             this.bullets.setAll("outOfBoundsKill", true);
             this.bullets.setAll("checkWorldBounds", true);
-
-            this.singleBullets = this.game.add.group();
-            this.singleBullets.enableBody = true;
-            this.singleBullets.physicsBodyType = Phaser.Physics.ARCADE;
-            this.singleBullets.createMultiple(30, "single_bullet", 0, false);
-            this.singleBullets.setAll("anchor.x", 0);
-            this.singleBullets.setAll("anchor.y", 0);
-            this.singleBullets.setAll("outOfBoundsKill", true);
-            this.singleBullets.setAll("checkWorldBounds", true);
-
-            this.doubleBullets = this.game.add.group();
-            this.doubleBullets.enableBody = true;
-            this.doubleBullets.physicsBodyType = Phaser.Physics.ARCADE;
-            this.doubleBullets.createMultiple(30, "double_bullet", 0, false);
-            this.doubleBullets.setAll("anchor.x", 0);
-            this.doubleBullets.setAll("anchor.y", 0);
-            this.doubleBullets.setAll("outOfBoundsKill", true);
-            this.doubleBullets.setAll("checkWorldBounds", true);
-            this.bulletType = 1;
             this.game.input.onDown.add(this.shoot, this);
             // event handlers
             this.KEY_ONE = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE);
             this.KEY_TWO = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO);
             this.KEY_THREE = this.game.input.keyboard.addKey(Phaser.Keyboard.THREE);
-            this.KEY_ONE.onDown.add(this.setNormalBullet, this);
-            this.KEY_TWO.onDown.add(this.setSingleBullet, this);
-            this.KEY_THREE.onDown.add(this.setDoubleBullet, this);
-        }
-        setNormalBullet() {
-            this.bulletType = 1;
-        }
-
-        setSingleBullet() {
-            this.bulletType = 2;
-        }
-        setDoubleBullet() {
-            this.bulletType = 3;
+            this.KEY_ONE.onDown.add(this.upgradeBullet, this);
+            // this.KEY_TWO.onDown.add(this.setSingleBullet, this);
+            // this.KEY_THREE.onDown.add(this.setDoubleBullet, this);
         }
         shoot() {
-            let bullet;
-            if (this.bulletType === 1) {
-                bullet = this.bullets.getFirstExists(false);
-            } else if (this.bulletType === 2) {
-                bullet = this.singleBullets.getFirstExists(false);
-            } else if (this.bulletType === 3) {
-                bullet = this.doubleBullets.getFirstExists(false);
-            }
-            console.log(this.bulletType);
+            let bullet = this.bullets.getFirstExists(false);
+            bullet.loadTexture(this.bullet.getTexture());
             bullet.reset(980, 260);
             bullet.rotation = this.game.physics.arcade.moveToPointer(bullet, 1000, this.game.input.activePointer, 500);
-
+        }
+        upgradeBullet() {
+            this.bullet = new UpgradeBullet(this.bullet);
         }
         updateText() {
             this.info.setText("Health : " + this.enemy.health);

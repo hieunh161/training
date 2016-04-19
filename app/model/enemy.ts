@@ -22,7 +22,7 @@ namespace ndd {
             this.LEFT_ARROW.onDown.add(Enemy.prototype.MoveLessRight, this);
             this.ESCAPE = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
             this.ESCAPE.onDown.add(Enemy.prototype.GameOver, this);
-            super(game, x, y, "enemy-walk", 0);
+            super(game, x, y, "enemy-walking", 0);
             this.anchor.set(0.0, 1.0);
             this.StartIdle();
         }
@@ -30,10 +30,6 @@ namespace ndd {
         update() {
             if (this.playerState === PlayerState.WALKING) {
                 this.x += (this.walkingSpeed / Enemy.MAX_SPEED) * this.game.time.elapsedMS;
-                // This logic depends on scene being added first.
-                // let stageWidth = this.game.stage.getChildAt(0).getBounds().width;
-                // if (this.x > stageWidth * .75)
-                //   this.x = stageWidth * .25;
             }
             super.update();
         }
